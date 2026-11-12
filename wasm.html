@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebAssembly Runner</title>
+    <!-- Use Tailwind CSS for a modern, responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-lg text-center flex flex-col items-center justify-center min-h-[calc(100vh-2rem)]">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">WebAssembly Runner</h1>
+        <p class="text-gray-600 mb-6 flex-grow flex items-center justify-center">
+            This page loads and executes a WebAssembly module named <code>wasm.txt</code>.
+        </p>
+
+        <div class="w-full">
+            <div id="status" class="p-4 rounded-lg bg-blue-100 text-blue-800 font-medium">
+                Loading...
+            </div>
+            <div id="result-container" class="hidden p-4 rounded-lg bg-green-100 text-green-800 font-medium">
+                <span id="result-label">Result:</span> <span id="result" class="font-bold"></span>
+            </div>
+            <div id="error-container" class="hidden p-4 rounded-lg bg-red-100 text-red-800 font-medium">
+                <span id="error-message"></span>
+            </div>
+        </div>
+
+        <p class="mt-8 text-sm text-gray-500">
+            For this to work, the <code>wasm.txt</code> file must be in the same directory as this HTML file.
+        </p>
+    </div>
+
+    <script>
+        // Use a self-invoking async function to handle the WebAssembly loading
+        (async () => {
+            const statusElement = document.getElementById('status');
+            const resultContainer = document.getElementById('result-container');
+            const resultElement = document.getElementById('result');
+            const errorContainer = document.getElementById('error-container');
+            const errorMessageElement = document.getElementById('error-message');
+            const wasmFilePath = 'wasm.txt';
+
+            // Function to display an error message
+            function displayError(message) {
+                statusElement.classList.add('hidden');
+                resultContainer.classList.add('hidden');
+                errorContainer.classList.remove('hidden');
+                errorMessageElement.textContent = message;
+            }
+
+            try {
+                // 1. Fetch the .wasm file
+                statusElement.textContent = `Fetching ${wasmFilePath}...`;
+                const response = await fetch(wasmFilePath);
+
+                // Check if the file was found
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Get the raw binary data as an ArrayBuffer
+                const wasmBytes = await response.arrayBuffer();
+
+                // 2. Compile and instantiate the WebAssembly module
+                statusElement.textContent = 'Compiling and instantiating module...';
+                const wasmModule = await WebAssembly.instantiate(wasmBytes, {});
+
+                // 3. Call a function from the module's exports
+                // Assumes the .wasm file has a function named 'add' that takes two numbers.
+                const addFunction = wasmModule.instance.exports.add;
+
+                // Check if the 'add' function exists before calling it
+                if (typeof addFunction !== 'function') {
+                    throw new Error(`The '.txt' file does not export a function named 'add'.`);
+                }
+
+                const sum = addFunction(5, 7);
+
+                // 4. Display the result
+                statusElement.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+                resultElement.textContent = sum;
+
+            } catch (error) {
+                console.error('An error occurred:', error);
+                displayError(`Failed to load or run the WebAssembly file: ${error.message}`);
+            }
+        })();
+    </script>
+</body>
+</html>

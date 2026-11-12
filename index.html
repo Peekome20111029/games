@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Verification</title>
+    <script src="https://google.com" async defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+        .captcha-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .g-recaptcha {
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="captcha-container">
+        <h2>Please verify you are human</h2>
+        <p>Complete the CAPTCHA below to continue.</p>
+        
+        <div class="g-recaptcha" 
+             data-sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" 
+             data-callback="onCaptchaSuccess">
+        </div>
+    </div>
+
+    <script>
+        function onCaptchaSuccess() {
+            window.location.href = "/index2.html";
+        }
+    </script>
+
+</body>
+</html>
