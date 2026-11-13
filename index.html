@@ -1,23 +1,139 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Verify</title>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-</head>
-<body>
-  <h1>Please verify ur a human to continue</h1>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pkosite</title>
+    <link href="/style.css" rel="stylesheet" type="text/css" media="all">
+    <!-- Load Google reCAPTCHA v2 -->
+    <script src="https://google.com" async defer></script>
+    <style>
+      #main-content {
+        display: none;
+      }
 
-  <div
-    class="g-recaptcha"
-    data-sitekey="6LeMSh0uAAAAANuRsgjWzJ5jFTP05TOCs62YXu5o"
-    data-callback="onVerified">
-  </div>
+      /* Full-screen centered overlay for the captcha gate */
+      #captcha-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: #121212;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      }
 
-  <script>
-    function onVerified() {
-      window.location.href = "fhoirasoihafaioehfiofhaowiefhaoiwehfoaiehfoawihefoiawehfaoiwehfaoiw.html";
-    }
-  </script>
-</body>
+      /* Neat centered card */
+      .captcha-card {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+        border-radius: 12px;
+        padding: 32px 40px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        max-width: 380px;
+        width: 90%;
+      }
+
+      .captcha-card h2 {
+        margin: 0 0 8px 0;
+        color: #ffffff;
+        font-size: 22px;
+        font-weight: 600;
+      }
+
+      .captcha-card p {
+        margin: 0 0 24px 0;
+        color: #a0a0a0;
+        font-size: 14px;
+      }
+
+      .g-recaptcha {
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- 1. Neat Captcha Gate -->
+    <div id="captcha-overlay">
+      <div class="captcha-card">
+        <h2>pkosite</h2>
+        <p>Complete the check below to unlock the games.</p>
+        <div class="g-recaptcha"
+             data-theme="dark"
+             data-sitekey="6LeMSh0uAAAAANuRsgjWzJ5jFTP05TOCs62YXu5o"
+             data-callback="onCaptchaSuccess"
+             data-expired-callback="onCaptchaExpired">
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Your Original Links -->
+    <div id="main-content">
+      <p>link -&gt; <a href="ter.html">terraria</a>.</p>
+      <p>link -&gt; <a href="slither.io.html">sllitherio</a></p>
+      <p>link -&gt; <a href="hard.html">platformer</a></p>
+      <p>link -&gt; <a href="sub.html">submersible</a></p>
+      <p>link -&gt; <a href="appel.html">appel</a></p>
+      <p>link -&gt; <a href="gen.html">terrain genorator</a></p>
+      <p>link -&gt; <a href="sim.html">flight sim</a></p>
+      <p>link -&gt; <a href="toy.html">powder toy (simple)</a></p>
+      <p>link -&gt; <a href="mast.html">the mast game</a></p>
+      <p>link -&gt; <a href="lineland.html">lineland</a></p>
+      <p>link -&gt; <a href="pmc.html">paper minecraft</a></p>
+      <p>link -&gt; <a href="ex.html">platformer 2</a></p>
+      <p>link -&gt; <a href="simm.html">flight sim 2</a></p>
+      <p>link -&gt; <a href="mc.html">minecraft (eaglercraft)</a></p>
+      <p>link -&gt; <a href="pen triangle.html">pen triangle </a></p>
+      <p>link -&gt; <a href="td.html">tower defense </a></p>
+      <p>link -&gt; <a href="road.html">road thing </a></p>
+      <p>link -&gt; <a href="sc3.html">scratch emu written in scratch</a></p>
+      <p>link -&gt; <a href="gd.html">geametry dash</a></p>
+      <p>link -&gt; <a href="snail.html">snail platformer</a></p>
+      <p>link -&gt; <a href="ninja.html">the ninja 1</a></p>
+      <p>link -&gt; <a href="ninja2.html">the ninja 2</a></p>
+      <p>link -&gt; <a href="ninja3.html">the ninja 3</a></p>
+      <p>link -&gt; <a href="ninja4.html">the ninja 4</a></p>
+      <p>link -&gt; <a href="ninja5.html">the ninja 5</a></p>
+    </div>
+
+    <script>
+      const captchaOverlay = document.getElementById('captcha-overlay');
+      const mainContent = document.getElementById('main-content');
+
+      // Show links when captcha is solved
+      function onCaptchaSuccess() {
+        captchaOverlay.style.display = 'none';
+        mainContent.style.display = 'block';
+      }
+
+      // Hide links if the captcha expires
+      function onCaptchaExpired() {
+        resetPage();
+      }
+
+      // Hide links and reset the captcha checkbox
+      function resetPage() {
+        mainContent.style.display = 'none';
+        captchaOverlay.style.display = 'flex';
+        if (typeof grecaptcha !== 'undefined') {
+          grecaptcha.reset();
+        }
+      }
+
+      // Trigger reset when returning via the browser's Back button
+      window.addEventListener('pageshow', function(event) {
+        const navEntries = performance.getEntriesByType('navigation');
+        const isBackForward = navEntries.length > 0 && navEntries.type === 'back_forward';
+
+        if (event.persisted || isBackForward) {
+          resetPage();
+        }
+      });
+    </script>
+  </body>
 </html>
